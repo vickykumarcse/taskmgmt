@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: task-management-system
+  data:
+    mongodb:
+      uri: mongodb+srv://vickyuser:kiwi%402015@vickycluster.0rvos.mongodb.net/taskdb?retryWrites=true&w=majority&appName=vickycluster
+  redis:
+    host: redis-19829.c264.ap-south-1-1.ec2.redns.redis-cloud.com
+    port: 19829
+    password: oKjtjbXjQ6C6GXuJB27Ai5hk47QQrsIP
+    timeout: 60000
+  rabbitmq:
+    host: localhost
+  kafka:
+    bootstrap-servers: localhost:9092
+  logging:
+    level:
+      org.springframework.data.redis: DEBUG
+      io.lettuce.core: DEBUG

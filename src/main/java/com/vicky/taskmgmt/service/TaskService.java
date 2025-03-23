@@ -16,8 +16,15 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired EmailProducerService emailProducerService;
+
     public Task createTask(Task task) {
-        return taskRepository.save(task); // Save a new task
+        Task newTask = taskRepository.save(task); // Save a new task
+        String emailId = newTask.getId()+"@task.com";
+        String subject = "Task Created: " + newTask.getTitle();
+        String message = "Your task is created successfully! \n" + newTask.getDescription();
+        this.emailProducerService.sendEmailRequest(emailId, subject, message);
+        return newTask;
     }
 
     public Task updateTask(String id, Task taskDetails) {
@@ -54,6 +61,10 @@ public class TaskService {
 
     public void deleteTask(String id) {
         taskRepository.deleteById(id); // Delete a task by ID
+    }
+
+    public void deleteAllTasks() {
+        taskRepository.deleteAll();
     }
 
 }

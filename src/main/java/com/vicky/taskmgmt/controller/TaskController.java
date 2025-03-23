@@ -39,9 +39,22 @@ public class TaskController {
         try {
             redisService.saveTask(createdTask.getId(), createdTask); // Store in Redis
         } catch(RedisConnectionFailureException e) {
-            logger.error("RedisConnectionFailureException", e.getMessage(), e);
+            //logger.error("RedisConnectionFailureException", e.getMessage(), e);
         }
         return new ResponseEntity<Task>(createdTask, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/bulk/{count}")
+    public ResponseEntity<String> createTasksInBulk(@PathVariable int count) {
+        for(int i=0; i<count; i++) {
+            Task task = new Task();
+            task.setStatus("Completed");
+            task.setPriority("Low");
+            task.setTitle("Send Email: "+ i+1);
+            task.setDescription("Bulk task created");
+            taskService.createTask(task);
+        }
+        return new ResponseEntity<String>("Bulk task creation request submitted!", HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -86,10 +99,20 @@ public class TaskController {
     public ResponseEntity<String> deleteTask(@PathVariable String id) {
         if(taskService.taskExists(id)) {
             taskService.deleteTask(id);
-            redisService.deleteTask(id); // Remove from Redis
+            try {
+                redisService.deleteTask(id); // Remove from Redis
+            } catch(RedisConnectionFailureException e) {
+                logger.error("RedisConnectionFailureException", e.getMessage(), e);
+            }
             return ResponseEntity.ok(id);
         }
         logger.error("ResourceNotFoundException");
         throw new ResourceNotFoundException("Task not found with id " + id);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteAllTasks() {
+        taskService.deleteAllTasks();
+        return ResponseEntity.ok("All Tasks Deleted");
     }
 }

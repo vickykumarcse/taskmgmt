@@ -16,7 +16,7 @@ public class EmailConsumerService {
         this.emailSenderService = emailSenderService;
     }
 
-    @RabbitListener(queues = RabbitMqConfig.EMAIL_QUEUE_NAME, ackMode = "MANUAL")
+    @RabbitListener(queues = RabbitMqConfig.EMAIL_QUEUE_NAME, ackMode = "MANUAL", concurrency = RabbitMqConfig.PREFETCH_COUNT)
     public void consumeEmailRequest(EmailRequest emailRequest, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag, 
                                     Channel channel) {
         System.out.println("Received email request: " + emailRequest.getEmailId());

@@ -1,6 +1,8 @@
 package com.vicky.taskmgmt.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.RedisConnectionFailureException;
@@ -39,7 +41,7 @@ public class TaskController {
         try {
             redisService.saveTask(createdTask.getId(), createdTask); // Store in Redis
         } catch(RedisConnectionFailureException e) {
-            //logger.error("RedisConnectionFailureException", e.getMessage(), e);
+            logger.error("RedisConnectionFailureException", e.getMessage(), e);
         }
         return new ResponseEntity<Task>(createdTask, HttpStatus.CREATED);
     }
@@ -53,14 +55,22 @@ public class TaskController {
             task.setTitle("Send Email: "+ i+1);
             task.setDescription("Bulk task created");
             taskService.createTask(task);
+            try {
+                redisService.saveTask(task.getId(), task); // Store in Redis
+            } catch(RedisConnectionFailureException e) {
+                logger.error("RedisConnectionFailureException", e.getMessage(), e);
+            }
         }
         return new ResponseEntity<String>("Bulk task creation request submitted!", HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
+    public ResponseEntity<Map<String, Object>> getAllTasks() {
         List<Task> tasks = taskService.getAllTasks();
-        return ResponseEntity.ok(tasks);
+        Map<String, Object> response = new HashMap<String, Object>();
+        response.put("tasks", tasks);
+        response.put("taskCount", tasks.size());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

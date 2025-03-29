@@ -3,15 +3,17 @@ package com.vicky.taskmgmt.service;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 
 import com.rabbitmq.client.Channel;
+import com.vicky.taskmgmt.config.RabbitMqConfig;
 
 @Service
 public class EmailSenderService {
-
-    private static final ExecutorService executor = Executors.newFixedThreadPool(100);
+    private static final int THREAD_COUNT = Integer.parseInt(RabbitMqConfig.PREFETCH_COUNT);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
 
     public void sendEmail(String emailId, String subject, String message, long deliveryTag, Channel channel) {
         CompletableFuture.runAsync(() -> {
@@ -31,5 +33,18 @@ public class EmailSenderService {
                 }
             }
         }, executor);
+    }
+
+    // ✅ Graceful Shutdown Method (Only Call on Application Shutdown)
+    public void shutdownExecutor() {
+        executor.shutdown(); // Stop accepting new tasks
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) { // Wait for tasks to complete
+                executor.shutdownNow(); // Forcefully terminate remaining tasks
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }

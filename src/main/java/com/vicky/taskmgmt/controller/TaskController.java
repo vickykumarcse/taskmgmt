@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.vicky.taskmgmt.exception.ResourceNotFoundException;
 import com.vicky.taskmgmt.model.Task;
-import com.vicky.taskmgmt.service.RedisService;
 import com.vicky.taskmgmt.service.TaskService;
 
 @RestController
@@ -32,17 +30,9 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    private RedisService redisService;
-
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         Task createdTask = taskService.createTask(task);
-        try {
-            redisService.saveTask(createdTask.getId(), createdTask); // Store in Redis
-        } catch(RedisConnectionFailureException e) {
-            logger.error("RedisConnectionFailureException", e.getMessage(), e);
-        }
         return new ResponseEntity<Task>(createdTask, HttpStatus.CREATED);
     }
 
@@ -55,11 +45,6 @@ public class TaskController {
             task.setTitle("Send Email: "+ i+1);
             task.setDescription("Bulk task created");
             taskService.createTask(task);
-            try {
-                redisService.saveTask(task.getId(), task); // Store in Redis
-            } catch(RedisConnectionFailureException e) {
-                logger.error("RedisConnectionFailureException", e.getMessage(), e);
-            }
         }
         return new ResponseEntity<String>("Bulk task creation request submitted!", HttpStatus.CREATED);
     }
@@ -75,10 +60,6 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable String id) {
-        Object cachedTask = redisService.getTask(id);
-        if (cachedTask != null) {
-            return ResponseEntity.ok((Task) cachedTask);
-        }
         try {
             Task task = taskService.getTaskById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
@@ -101,7 +82,6 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task taskDetails) {
         Task updatedTask = taskService.updateTask(id, taskDetails);
-        redisService.saveTask(updatedTask.getId(), updatedTask); // Store in Redis
         return ResponseEntity.ok(updatedTask);
     }
 
@@ -109,11 +89,6 @@ public class TaskController {
     public ResponseEntity<String> deleteTask(@PathVariable String id) {
         if(taskService.taskExists(id)) {
             taskService.deleteTask(id);
-            try {
-                redisService.deleteTask(id); // Remove from Redis
-            } catch(RedisConnectionFailureException e) {
-                logger.error("RedisConnectionFailureException", e.getMessage(), e);
-            }
             return ResponseEntity.ok(id);
         }
         logger.error("ResourceNotFoundException");
@@ -124,5 +99,10 @@ public class TaskController {
     public ResponseEntity<String> deleteAllTasks() {
         taskService.deleteAllTasks();
         return ResponseEntity.ok("All Tasks Deleted");
+    }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<Map<String, Integer>> getAnalytics() {
+        return ResponseEntity.ok(taskService.getPriorityCount());
     }
 }

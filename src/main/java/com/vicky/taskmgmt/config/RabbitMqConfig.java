@@ -12,7 +12,7 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 @Configuration
 public class RabbitMqConfig {
     public static final String EMAIL_QUEUE_NAME = "localEmailQueue";
-    public static final String PREFETCH_COUNT = "1000";
+    public static final String PREFETCH_COUNT = "50";
 
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {

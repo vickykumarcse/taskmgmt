@@ -1,11 +1,14 @@
 package com.vicky.taskmgmt.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Service;
-
 import com.vicky.taskmgmt.exception.ResourceNotFoundException;
 import com.vicky.taskmgmt.model.Task;
 import com.vicky.taskmgmt.repository.TaskRepository;
@@ -16,14 +19,30 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired EmailProducerService emailProducerService;
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired 
+    private EmailProducerService emailProducerService;
+
+    @Autowired 
+    private KafkaProducerService kafkaProducerService;
+
+    private static final Logger logger = LogManager.getLogger(TaskService.class);
 
     public Task createTask(Task task) {
         Task newTask = taskRepository.save(task); // Save a new task
         String emailId = newTask.getId()+"@task.com";
         String subject = "Task Created: " + newTask.getTitle();
         String message = "Your task is created successfully! \n" + newTask.getDescription();
+        try {
+            redisService.saveTask(newTask.getId(), newTask); // Store in Redis
+        } catch(RedisConnectionFailureException e) {
+            logger.error("RedisConnectionFailureException", e.getMessage(), e);
+        }
         this.emailProducerService.sendEmailRequest(emailId, subject, message);
+        String kafkaMessage = newTask.getId() + ":" + newTask.getPriority();
+        this.kafkaProducerService.sendMessage("task-topic", kafkaMessage);
         return newTask;
     }
 
@@ -40,7 +59,9 @@ public class TaskService {
         existingTask.setDueDate(taskDetails.getDueDate());
         
         // Save the updated task back to the repository
-        return taskRepository.save(existingTask);
+        Task updatedTask = taskRepository.save(existingTask);
+        redisService.saveTask(updatedTask.getId(), updatedTask); // Store in Redis
+        return updatedTask;
     }
 
     public List<Task> getAllTasks() {
@@ -52,6 +73,10 @@ public class TaskService {
     }
 
     public Optional<Task> getTaskById(String id) {
+        Object cachedTask = redisService.getTask(id);
+        if (cachedTask != null) {
+            return Optional.ofNullable((Task)cachedTask);
+        }
         return taskRepository.findById(id); // Retrieve a task by ID
     }
 
@@ -61,10 +86,19 @@ public class TaskService {
 
     public void deleteTask(String id) {
         taskRepository.deleteById(id); // Delete a task by ID
+        try {
+            redisService.deleteTask(id); // Remove from Redis
+        } catch(RedisConnectionFailureException e) {
+            logger.error("RedisConnectionFailureException", e.getMessage(), e);
+        }
     }
 
     public void deleteAllTasks() {
         taskRepository.deleteAll();
+    }
+
+    public Map<String, Integer> getPriorityCount() {
+        return redisService.getPriorityCount();
     }
 
 }

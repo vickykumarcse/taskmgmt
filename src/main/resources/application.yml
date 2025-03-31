@@ -3,7 +3,7 @@ spring:
     name: task-management-system
   data:
     mongodb:
-      uri: mongodb+srv://vickyuser:kiwi%402015@vickycluster.0rvos.mongodb.net/taskdb?retryWrites=true&w=majority&appName=vickycluster
+      uri: mongodb://admin:secret@localhost:27017/taskdb?authSource=admin
   redis:
     host: localhost
     port: 6379
@@ -14,6 +14,15 @@ spring:
     password: guest
   kafka:
     bootstrap-servers: localhost:9092
+    consumer:
+      group-id: task-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  
   logging:
     level:
       org.springframework.data.redis: DEBUG

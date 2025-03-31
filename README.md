@@ -1,73 +1,93 @@
 # Task Management System
 
-## Overview
-Task Management System is a project built using Spring Boot with Redis and MongoDB Atlas. It integrates RabbitMQ as a message broker to handle asynchronous messaging efficiently.
+## 📌 Overview
+The **Task Management System** is a backend project built using **Spring Boot**, **Redis**, and **MongoDB Atlas**. It integrates **RabbitMQ** as a message broker to handle asynchronous messaging efficiently. The application is containerized using **Docker** to ensure a smooth setup and deployment process.
 
-## Prerequisites
-Ensure you have the following installed before running the application:
-- [Docker](https://www.docker.com/)
-- [RabbitMQ](https://www.rabbitmq.com/)
-- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-- [Redis](https://redis.io/)
+---
 
-## Starting RabbitMQ
-Run the following command to start RabbitMQ using Docker:
+## ✅ Prerequisites
+Ensure you have the following installed **before running the application**:
+- [Docker](https://www.docker.com/) (for running dependencies)
+- [Java 17+](https://adoptium.net/) (for running the Spring Boot application)
 
+### **Verify Docker Installation**
+Check if Docker is installed by running:
 ```sh
-sudo docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4.0-management
+docker --version
+```
+If installed, it will display the version number.
+
+---
+
+## 🚀 Getting Started
+
+### **1️⃣ Clone the Repository**
+```sh
+git clone https://github.com/vickykumarcse/taskmgmt.git
+cd taskmgmt
 ```
 
-### RabbitMQ Access
-- **Message Broker (AMQP):** [http://localhost:5672](http://localhost:5672)
+### **2️⃣ Start Dependencies using Docker**
+Run the following command to start **MongoDB, Redis, and RabbitMQ**:
+```sh
+docker compose up -d
+```
+To stop and remove the running containers:
+```sh
+docker compose down
+```
+
+### **3️⃣ Build and Run the Application**
+Compile and start the Spring Boot application:
+```sh
+./mvnw spring-boot:run
+```
+
+---
+
+## 📨 RabbitMQ Management
+RabbitMQ provides a web-based UI to monitor message queues.
+
+- **AMQP Broker:** [http://localhost:5672](http://localhost:5672)
 - **Web Management UI:** [http://localhost:15672](http://localhost:15672)
-  
-#### Default Credentials:
+
+#### **Default Login Credentials:**
 - **Username:** `guest`
 - **Password:** `guest`
 
-## Starting Redis
-Run the following command to start Redis using Docker:
+---
 
-```sh
-sudo docker run -d --rm --name redis-container -p 6379:6379 redis
+## Kafka Management
+Kafka UI Portal
+- **Web Management UI:** [http://localhost:8081](http://localhost:8081)
 
-```
 
-## Running the Application
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/vickykumarcse/taskmgmt.git
-   cd taskmgmt
-   ```
-2. Configure your environment settings for MongoDB Atlas and Redis.
-3. Build and run the application using:
-   ```sh
-   ./mvnw spring-boot:run
-   ```
-## Check Live Resources
-
-### Access Actuator Endpoints
+## 📊 Monitoring & Metrics
+### **🔍 Actuator Endpoints**
+Spring Boot Actuator provides health and monitoring endpoints.
 
 - **Check live threads:**  
   👉 [http://localhost:8080/actuator/metrics/jvm.threads.live](http://localhost:8080/actuator/metrics/jvm.threads.live)
-
-- **Get a thread dump:**  
+- **Thread dump:**  
   👉 [http://localhost:8080/actuator/threaddump](http://localhost:8080/actuator/threaddump)
-
-- **Get all available metrics:**  
+- **All available metrics:**  
   👉 [http://localhost:8080/actuator/metrics](http://localhost:8080/actuator/metrics)
-
-- **Get system health details:**  
+- **System health status:**  
   👉 [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
 
-## View Redis Metrics
+### **📈 Redis Metrics**
+Monitor Redis performance using Actuator metrics:
 
 - **Number of keys:**  
   👉 [http://localhost:8080/actuator/metrics/redis.keys](http://localhost:8080/actuator/metrics/redis.keys)
-
 - **Memory usage:**  
   👉 [http://localhost:8080/actuator/metrics/redis.memory.used](http://localhost:8080/actuator/metrics/redis.memory.used)
 
+---
 
-## License
-This project is licensed under the MIT License.
+## 📝 License
+This project is licensed under the **MIT License**. Feel free to use and modify it as needed.
+
+---
+
+🎯 **Now you’re ready to build and scale your Task Management System!** 🚀

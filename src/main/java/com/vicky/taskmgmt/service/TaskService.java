@@ -22,42 +22,43 @@ public class TaskService {
     @Autowired
     private RedisService redisService;
 
-    @Autowired 
+    @Autowired
     private EmailProducerService emailProducerService;
 
-    @Autowired 
+    @Autowired
     private KafkaProducerService kafkaProducerService;
 
     private static final Logger logger = LogManager.getLogger(TaskService.class);
 
     public Task createTask(Task task) {
         Task newTask = taskRepository.save(task); // Save a new task
-        String emailId = newTask.getId()+"@task.com";
+        String emailId = newTask.getId() + "@task.com";
         String subject = "Task Created: " + newTask.getTitle();
         String message = "Your task is created successfully! \n" + newTask.getDescription();
         try {
             redisService.saveTask(newTask.getId(), newTask); // Store in Redis
-        } catch(RedisConnectionFailureException e) {
+        } catch (RedisConnectionFailureException e) {
             logger.error("RedisConnectionFailureException", e.getMessage(), e);
         }
         this.emailProducerService.sendEmailRequest(emailId, subject, message);
         String kafkaMessage = newTask.getId() + ":" + newTask.getPriority();
-        this.kafkaProducerService.sendMessage("task-topic", kafkaMessage);
+        this.kafkaProducerService.sendMessage("task-topic", newTask.getId(), kafkaMessage);
         return newTask;
     }
 
     public Task updateTask(String id, Task taskDetails) {
         // Retrieve the existing task by ID
         Task existingTask = taskRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id " + id));
 
-        // Update fields of the existing task with the details from the incoming taskDetails object
+        // Update fields of the existing task with the details from the incoming
+        // taskDetails object
         existingTask.setTitle(taskDetails.getTitle());
         existingTask.setDescription(taskDetails.getDescription());
         existingTask.setStatus(taskDetails.getStatus());
         existingTask.setPriority(taskDetails.getPriority());
         existingTask.setDueDate(taskDetails.getDueDate());
-        
+
         // Save the updated task back to the repository
         Task updatedTask = taskRepository.save(existingTask);
         redisService.saveTask(updatedTask.getId(), updatedTask); // Store in Redis
@@ -75,7 +76,7 @@ public class TaskService {
     public Optional<Task> getTaskById(String id) {
         Object cachedTask = redisService.getTask(id);
         if (cachedTask != null) {
-            return Optional.ofNullable((Task)cachedTask);
+            return Optional.ofNullable((Task) cachedTask);
         }
         return taskRepository.findById(id); // Retrieve a task by ID
     }
@@ -85,16 +86,21 @@ public class TaskService {
     }
 
     public void deleteTask(String id) {
-        taskRepository.deleteById(id); // Delete a task by ID
-        try {
-            redisService.deleteTask(id); // Remove from Redis
-        } catch(RedisConnectionFailureException e) {
-            logger.error("RedisConnectionFailureException", e.getMessage(), e);
+        Optional<Task> task = taskRepository.findById(id);
+        if (task != null) {
+            taskRepository.deleteById(id); // Delete a task by ID
+            try {
+                redisService.deleteTask(id); // Remove from Redis
+                redisService.saveTaskPriorityCount(task.get().getPriority(), "decrement");
+            } catch (RedisConnectionFailureException e) {
+                logger.error("RedisConnectionFailureException", e.getMessage(), e);
+            }
         }
     }
 
     public void deleteAllTasks() {
         taskRepository.deleteAll();
+        redisService.resetTaskPriorityCount();
     }
 
     public Map<String, Integer> getPriorityCount() {

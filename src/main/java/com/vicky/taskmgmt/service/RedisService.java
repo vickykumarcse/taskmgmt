@@ -26,7 +26,7 @@ public class RedisService {
         redisTemplate.delete(taskId); // Delete task from Redis
     }
 
-    public void saveTaskPriorityCount(String priority) {
+    private String getRedisPriorityKey(String priority) {
         String key = null;
         if (priority.equalsIgnoreCase("Low")) {
             key = "task:low";
@@ -35,14 +35,28 @@ public class RedisService {
         } else if (priority.equalsIgnoreCase("High")) {
             key = "task:high";
         }
+        return key;
+    }
+
+    public void saveTaskPriorityCount(String priority, String operation) {
+        String key = getRedisPriorityKey(priority);
         if (key != null) {
             // Initialize key if it does not exist
             if (redisTemplate.opsForValue().get(key) == null || redisTemplate.opsForValue().get(key).equals("0")) {
                 redisTemplate.opsForValue().set(key, 0);
             }
-            // Increment the counter
-            redisTemplate.opsForValue().increment(key);
+            if(operation.equals("increment")) {
+                redisTemplate.opsForValue().increment(key);
+            } else if(operation.equals("decrement")) {
+                redisTemplate.opsForValue().decrement(key);
+            }
         }
+    }
+
+    public void resetTaskPriorityCount() {
+        redisTemplate.opsForValue().set("task:low", 0);
+        redisTemplate.opsForValue().set("task:medium", 0);
+        redisTemplate.opsForValue().set("task:high", 0);   
     }
 
     public Map<String, Integer> getPriorityCount() {

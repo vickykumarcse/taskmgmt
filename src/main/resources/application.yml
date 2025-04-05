@@ -14,14 +14,22 @@ spring:
     password: guest
   kafka:
     bootstrap-servers: localhost:9092
-    consumer:
-      group-id: task-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
+      acks: all   # Ensures messages are committed only when all brokers acknowledge
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3  # Number of retries in case of failure
+      properties:
+        linger.ms: 1   # Delay before sending batches (helps with batching)
+        batch.size: 16384  # Batch size for producer
+    consumer:
+      group-id: task-group
+      auto-offset-reset: earliest # Options: earliest, latest, none
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false  # Set to false to manually commit offsets
+    listener:
+      ack-mode: manual_immediate  # Enables manual acknowledgment of messages
   
   logging:
     level:

@@ -65,13 +65,6 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
-
-		<!-- Optional: Logging (remove if using default Logback) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
-		</dependency>
-
 		<!-- Jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>

@@ -3,9 +3,8 @@ package com.vicky.taskmgmt.service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,8 @@ public class TaskService {
     @Autowired
     private KafkaProducerService kafkaProducerService;
 
-    private static final Logger logger = LogManager.getLogger(TaskService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
+
 
     public Task createTask(Task task) {
         Task newTask = taskRepository.save(task); // Save a new task

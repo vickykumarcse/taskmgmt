@@ -30,19 +30,17 @@ spring:
       enable-auto-commit: false  # Set to false to manually commit offsets
     listener:
       ack-mode: manual_immediate  # Enables manual acknowledgment of messages
-  
-  logging:
-    level:
-      org.springframework.data.redis: DEBUG
-      io.lettuce.core: DEBUG
+
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: prometheus, health, info
   endpoint:
     health:
       show-details: always
+    prometheus:
+      enabled: true
     threaddump:
       enabled: true
     metrics:
@@ -51,3 +49,12 @@ management:
     export:
       redis:
         enabled: true
+      prometheus:
+        enabled: true
+logging:
+  level:
+    root: INFO
+    org.springframework.data.redis: DEBUG
+    io.lettuce.core: DEBUG
+  file:
+    name: logs/app.log

@@ -3,7 +3,7 @@ services:
   mongodb:
     image: mongo
     container_name: mongodb
-    restart: always
+    restart: no
     ports:
       - "27017:27017"
     environment:
@@ -16,14 +16,14 @@ services:
   redis:
     image: redis
     container_name: redis-container
-    restart: always
+    restart: no
     ports:
       - "6379:6379"
 # Message Queue
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
-    restart: always
+    restart: no
     ports:
       - "5672:5672"   # RabbitMQ main communication port
       - "15672:15672" # Management UI port
@@ -36,7 +36,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
-    restart: always
+    restart: no
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
@@ -46,7 +46,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
-    restart: always
+    restart: no
     depends_on:
       - zookeeper
     ports:
@@ -63,7 +63,7 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
-    restart: always
+    restart: no
     ports:
       - "8081:8080"
     environment:
@@ -71,7 +71,25 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:9093
     depends_on:
       - kafka
-
+# Prometheus
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: no
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+# Grafana
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: no
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
 volumes:
   mongodb_data:
     driver: local
+  grafana-storage:

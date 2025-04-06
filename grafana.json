@@ -1,0 +1,322 @@
+{
+    "id": null,
+    "uid": null,
+    "title": "Spring Boot Full Stack Metrics",
+    "timezone": "browser",
+    "schemaVersion": 37,
+    "version": 1,
+    "refresh": "5s",
+    "panels": [
+        {
+            "type": "graph",
+            "title": "Spring Boot - Request Rate by URI",
+            "targets": [
+                {
+                    "expr": "sum(rate(http_server_requests_seconds_count[1m])) by (uri)",
+                    "legendFormat": "{{uri}}",
+                    "interval": ""
+                }
+            ],
+            "id": 1,
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Spring Boot - Avg Response Time by URI",
+            "targets": [
+                {
+                    "expr": "sum(rate(http_server_requests_seconds_sum[1m])) by (uri) / sum(rate(http_server_requests_seconds_count[1m])) by (uri)",
+                    "legendFormat": "{{uri}}",
+                    "interval": ""
+                }
+            ],
+            "id": 2,
+            "gridPos": {
+                "x": 12,
+                "y": 0,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Spring Boot - Status Code Breakdown",
+            "targets": [
+                {
+                    "expr": "sum(rate(http_server_requests_seconds_count[1m])) by (status)",
+                    "legendFormat": "Status {{status}}",
+                    "interval": ""
+                }
+            ],
+            "id": 3,
+            "gridPos": {
+                "x": 0,
+                "y": 8,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Spring Boot - 5xx Error Rate",
+            "targets": [
+                {
+                    "expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[1m]))",
+                    "legendFormat": "5xx Errors",
+                    "interval": ""
+                }
+            ],
+            "id": 4,
+            "gridPos": {
+                "x": 12,
+                "y": 8,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "JVM - Heap Memory Used",
+            "targets": [
+                {
+                    "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+                    "legendFormat": "{{id}}",
+                    "interval": ""
+                }
+            ],
+            "id": 5,
+            "gridPos": {
+                "x": 0,
+                "y": 16,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "JVM - Non-Heap Memory Used",
+            "targets": [
+                {
+                    "expr": "jvm_memory_used_bytes{area=\"nonheap\"}",
+                    "legendFormat": "{{id}}",
+                    "interval": ""
+                }
+            ],
+            "id": 6,
+            "gridPos": {
+                "x": 12,
+                "y": 16,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "JVM - GC Pause Time",
+            "targets": [
+                {
+                    "expr": "rate(jvm_gc_pause_seconds_sum[1m])",
+                    "legendFormat": "GC Pause",
+                    "interval": ""
+                }
+            ],
+            "id": 7,
+            "gridPos": {
+                "x": 0,
+                "y": 24,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "JVM - Thread Count",
+            "targets": [
+                {
+                    "expr": "jvm_threads_live_threads",
+                    "legendFormat": "Live Threads",
+                    "interval": ""
+                }
+            ],
+            "id": 8,
+            "gridPos": {
+                "x": 12,
+                "y": 24,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Redis - Memory Used",
+            "targets": [
+                {
+                    "expr": "redis_memory_used_bytes",
+                    "legendFormat": "Redis Memory",
+                    "interval": ""
+                }
+            ],
+            "id": 9,
+            "gridPos": {
+                "x": 0,
+                "y": 32,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Redis - Connected Clients",
+            "targets": [
+                {
+                    "expr": "redis_connected_clients",
+                    "legendFormat": "Clients",
+                    "interval": ""
+                }
+            ],
+            "id": 10,
+            "gridPos": {
+                "x": 12,
+                "y": 32,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Redis - Commands Processed",
+            "targets": [
+                {
+                    "expr": "rate(redis_commands_processed_total[1m])",
+                    "legendFormat": "Commands",
+                    "interval": ""
+                }
+            ],
+            "id": 11,
+            "gridPos": {
+                "x": 0,
+                "y": 40,
+                "w": 24,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "RabbitMQ - Queue Length",
+            "targets": [
+                {
+                    "expr": "rabbitmq_queue_messages_ready",
+                    "legendFormat": "{{queue}}",
+                    "interval": ""
+                }
+            ],
+            "id": 12,
+            "gridPos": {
+                "x": 0,
+                "y": 48,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "RabbitMQ - Messages Published",
+            "targets": [
+                {
+                    "expr": "rate(rabbitmq_messages_published_total[1m])",
+                    "legendFormat": "Published",
+                    "interval": ""
+                }
+            ],
+            "id": 13,
+            "gridPos": {
+                "x": 12,
+                "y": 48,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "RabbitMQ - Messages Delivered",
+            "targets": [
+                {
+                    "expr": "rate(rabbitmq_messages_delivered_total[1m])",
+                    "legendFormat": "Delivered",
+                    "interval": ""
+                }
+            ],
+            "id": 14,
+            "gridPos": {
+                "x": 0,
+                "y": 56,
+                "w": 24,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Kafka - Incoming Message Rate",
+            "targets": [
+                {
+                    "expr": "rate(kafka_server_brokertopicmetrics_messagesin_total[1m])",
+                    "legendFormat": "{{topic}}",
+                    "interval": ""
+                }
+            ],
+            "id": 15,
+            "gridPos": {
+                "x": 0,
+                "y": 64,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Kafka - Consumer Lag",
+            "targets": [
+                {
+                    "expr": "kafka_consumergroup_lag",
+                    "legendFormat": "{{consumergroup}}",
+                    "interval": ""
+                }
+            ],
+            "id": 16,
+            "gridPos": {
+                "x": 12,
+                "y": 64,
+                "w": 12,
+                "h": 8
+            }
+        },
+        {
+            "type": "graph",
+            "title": "Kafka - Bytes In/Out",
+            "targets": [
+                {
+                    "expr": "rate(kafka_server_brokertopicmetrics_bytesin_total[1m])",
+                    "legendFormat": "Bytes In",
+                    "interval": ""
+                },
+                {
+                    "expr": "rate(kafka_server_brokertopicmetrics_bytesout_total[1m])",
+                    "legendFormat": "Bytes Out",
+                    "interval": ""
+                }
+            ],
+            "id": 17,
+            "gridPos": {
+                "x": 0,
+                "y": 72,
+                "w": 24,
+                "h": 8
+            }
+        }
+    ]
+}

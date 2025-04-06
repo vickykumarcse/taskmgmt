@@ -5,6 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.rabbitmq.client.Channel;
@@ -12,6 +14,8 @@ import com.vicky.taskmgmt.config.RabbitMqConfig;
 
 @Service
 public class EmailSenderService {
+    private static final Logger logger = LoggerFactory.getLogger(EmailSenderService.class);
+
     private static final int THREAD_COUNT = Integer.parseInt(RabbitMqConfig.PREFETCH_COUNT);
     private static final ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
 
@@ -21,13 +25,13 @@ public class EmailSenderService {
                 Thread.sleep(3000);
                 // ✅ Acknowledge the message after successful email processing
                 channel.basicAck(deliveryTag, false);
-                System.out.println("Email sent to: " + emailId + " | Subject: " + subject);
+                logger.info("Email sent to: " + emailId + " | Subject: " + subject);
             } catch (Exception e) {
                 Thread.currentThread().interrupt();
                 try {
                     //❌ If email sending fails, reject and requeue the message
                     channel.basicNack(deliveryTag, false, true);
-                    System.out.println("Message requeued: " + emailId);
+                    logger.info("Message requeued: " + emailId);
                 } catch (Exception nackEx) {
                     nackEx.printStackTrace();
                 }

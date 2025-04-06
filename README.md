@@ -70,10 +70,35 @@ Spring Boot Actuator provides health and monitoring endpoints.
   👉 [http://localhost:8080/actuator/metrics/jvm.threads.live](http://localhost:8080/actuator/metrics/jvm.threads.live)
 - **Thread dump:**  
   👉 [http://localhost:8080/actuator/threaddump](http://localhost:8080/actuator/threaddump)
+- **Prometheus:**  
+  👉 [http://localhost:8080/actuator/prometheus](http://localhost:8080/actuator/prometheus)
 - **All available metrics:**  
   👉 [http://localhost:8080/actuator/metrics](http://localhost:8080/actuator/metrics)
 - **System health status:**  
   👉 [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+
+### 🔗 Monitoring URLs
+
+- **Prometheus**: [http://localhost:9090](http://localhost:9090)
+- **Grafana**: [http://localhost:3000](http://localhost:3000)  
+  &nbsp;&nbsp;&nbsp;&nbsp;👤 **Username**: `admin`  
+  &nbsp;&nbsp;&nbsp;&nbsp;🔒 **Password**: `admin`
+
+---
+
+## 📊 Connect Grafana to Prometheus
+
+1. Open the Grafana UI: [http://localhost:3000](http://localhost:3000)
+2. Go to **⚙️ → Data Sources**
+3. Click **"Add data source"**
+4. Select **Prometheus**
+5. In the URL field, enter:
+
+   ```
+   http://prometheus:9090
+   ```
+
+6. Click **"Save & Test"** to verify the connection
 
 ### **📈 Redis Metrics**
 Monitor Redis performance using Actuator metrics:

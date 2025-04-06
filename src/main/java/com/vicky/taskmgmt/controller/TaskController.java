@@ -3,7 +3,8 @@ package com.vicky.taskmgmt.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.vicky.taskmgmt.exception.ResourceNotFoundException;
 import com.vicky.taskmgmt.model.Task;
 import com.vicky.taskmgmt.service.TaskService;
@@ -25,7 +24,7 @@ import com.vicky.taskmgmt.service.TaskService;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private static final Logger logger = LogManager.getLogger(TaskController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     @Autowired
     private TaskService taskService;

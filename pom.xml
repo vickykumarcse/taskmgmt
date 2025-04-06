@@ -65,6 +65,12 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
+		<!-- Prometheus -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
 		<!-- Jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>

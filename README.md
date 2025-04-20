@@ -1,9 +1,21 @@
 # Task Management System
 
 ## 📌 Overview
-The **Task Management System** is a backend project built using **Spring Boot**, **Redis**, and **MongoDB Atlas**. It integrates **RabbitMQ** as a message broker to handle asynchronous messaging efficiently. The application is containerized using **Docker** to ensure a smooth setup and deployment process.
 
----
+**TaskMgmt** is a Spring Boot–based task management system designed for scalability, performance, and real-time analytics. It integrates core microservice patterns and observability tools to streamline task processing, queuing, caching, and monitoring.
+
+The system uses:
+
+- **MongoDB** as the primary NoSQL database for storing task data.
+- **Redis** for high-speed caching of frequently accessed task information.
+- **RabbitMQ** for asynchronous message-driven task processing (e.g., email notifications).
+- **Kafka** for real-time task event streaming and analytics.
+- **Prometheus** to collect application and infrastructure metrics.
+- **Grafana** to visualize those metrics in a clean, customizable dashboard.
+- **Kafka UI** for managing and monitoring Kafka topics.
+- **Spring Boot Actuator** and **Micrometer** for exposing metrics and integrating with observability tools.
+
+All components are containerized using Docker Compose to ensure easy local development and deployment.
 
 ## ✅ Prerequisites
 Ensure you have the following installed **before running the application**:
@@ -100,17 +112,7 @@ Spring Boot Actuator provides health and monitoring endpoints.
 
 6. Click **"Save & Test"** to verify the connection
 
-### **📈 Redis Metrics**
-Monitor Redis performance using Actuator metrics:
-
-- **Number of keys:**  
-  👉 [http://localhost:8080/actuator/metrics/redis.keys](http://localhost:8080/actuator/metrics/redis.keys)
-- **Memory usage:**  
-  👉 [http://localhost:8080/actuator/metrics/redis.memory.used](http://localhost:8080/actuator/metrics/redis.memory.used)
-
 ---
 
 ## 📝 License
 This project is licensed under the **MIT License**. Feel free to use and modify it as needed.
-
----

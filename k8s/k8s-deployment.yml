@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskmgmt-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taskmgmt
+  template:
+    metadata:
+      labels:
+        app: taskmgmt
+    spec:
+      containers:
+        - name: taskmgmt
+          image: taskmgmt:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: taskmgmt
+                  key: SERVICE_HOST
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://admin:secret@$(SERVICE_HOST):27017/taskdb?authSource=admin
+            - name: SPRING_REDIS_HOST
+              value: $(SERVICE_HOST)
+            - name: SPRING_RABBITMQ_HOST
+              value: $(SERVICE_HOST)
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: $(SERVICE_HOST):9092

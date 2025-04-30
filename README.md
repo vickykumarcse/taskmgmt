@@ -20,7 +20,7 @@ All components are containerized using Docker Compose to ensure easy local devel
 ## ✅ Prerequisites
 Ensure you have the following installed **before running the application**:
 - [Docker](https://www.docker.com/) (for running dependencies)
-- [Java 17+](https://adoptium.net/) (for running the Spring Boot application)
+- [Java 21+](https://adoptium.net/) (for running the Spring Boot application)
 
 ### **Verify Docker Installation**
 Check if Docker is installed by running:

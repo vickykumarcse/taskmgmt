@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: taskmgmt-config
 data:
-  SERVICE_HOST: 192.168.29.187
+  SERVICE_HOST: 192.168.49.1

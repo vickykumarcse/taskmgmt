@@ -15,14 +15,14 @@ spec:
       containers:
         - name: taskmgmt
           image: taskmgmt:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           env:
             - name: SERVICE_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: taskmgmt
+                  name: taskmgmt-config
                   key: SERVICE_HOST
             - name: SPRING_DATA_MONGODB_URI
               value: mongodb://admin:secret@$(SERVICE_HOST):27017/taskdb?authSource=admin
@@ -31,4 +31,4 @@ spec:
             - name: SPRING_RABBITMQ_HOST
               value: $(SERVICE_HOST)
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: $(SERVICE_HOST):9092
+              value: $(SERVICE_HOST):9094

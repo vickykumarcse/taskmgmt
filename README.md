@@ -40,7 +40,7 @@ cd taskmgmt
 ```
 
 ### **2️⃣ Start Dependencies using Docker**
-Run the following command to start **MongoDB, Redis, and RabbitMQ**:
+Run the following command to start the dependent services
 ```sh
 docker compose up -d
 ```
@@ -54,6 +54,9 @@ Compile and start the Spring Boot application:
 ```sh
 ./mvnw spring-boot:run
 ```
+#### Deploying Task Management App on Kubernetes (Local Setup with Minikube)
+
+To deploy the **taskmgmt** locally using **Kubernetes** via **Minikube**, follow the instructions provided in the [`k8s-setup.md`](./k8s-setup.md) file.
 
 ---
 
@@ -72,6 +75,16 @@ RabbitMQ provides a web-based UI to monitor message queues.
 ## Kafka Management
 Kafka UI Portal
 - **Web Management UI:** [http://localhost:8081](http://localhost:8081)
+
+## Redis Management
+View keys and values stored in redis.
+
+```
+docker exec -it redis-container redis-cli
+KEYS *
+GET <Key Name>
+exit
+```
 
 
 ## 📊 Monitoring & Metrics

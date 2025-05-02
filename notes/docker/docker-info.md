@@ -26,6 +26,7 @@ docker images                         # List all images
 docker rmi <image-id>                 # Remove an image
 docker pull <image>                   # Download image from Docker Hub
 docker push <name>:<tag>              # Push image to Docker Hub
+docker image prune                    # Remove dangling images
 ```
 
 #### 🚀 **Container Commands**

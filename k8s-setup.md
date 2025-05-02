@@ -72,6 +72,7 @@ Minikube performs **several setup steps** to initialize a local Kubernetes clust
 ---
 
 ### 🐳 3. **Build Your Local Image for Minikube**
+Run below command from taskmgmt directory
 ```
 docker build -t taskmgmt:latest .
 ```
@@ -96,7 +97,7 @@ minikube image list
 ---
 
 ### 📁 4. **Apply All YAML Files**
-Apply them in order:
+Apply them in order from taskmgmt directory:
 
 ```bash
 kubectl apply -f ./k8s/k8s-configmap.yml
@@ -149,12 +150,11 @@ These `kubectl apply` commands will apply three different Kubernetes resource fi
 
 ### 🌐 5. **Access Your App**
 
-If you used a `NodePort` service:
+This opens the app in your default browser useful for UI based app. 
 ```bash
 minikube service taskmgmt-service
 ```
-
-This opens the app in your default browser. Alternatively:
+Alternatively you can get the url of the app:
 ```bash
 minikube service taskmgmt-service --url
 ```
@@ -164,13 +164,20 @@ minikube service taskmgmt-service --url
 
 ```bash
 kubectl get all
+kubectl get nodes
 kubectl get pods
 kubectl describe pod <pod-name>
 kubectl logs deployment/taskmgmt-deployment
+kubectl exec -it <pod-name> -- printenv
 ```
-Restart the deployment
-```
+Restart the deployment for image changes
+```bash
 kubectl rollout restart deployment taskmgmt-deployment
+```
+
+Remove minikube image in case of caching
+```
+minikube ssh -- docker rmi -f taskmgmt:latest
 ```
 
 ### 🧪 7. **Stop the minikube**

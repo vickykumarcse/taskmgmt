@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: taskmgmt-gateway
+  namespace: task
+spec:
+  selector:
+    istio: ingressgateway # Use Istio's built-in ingress
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: taskmgmt-vs
+  namespace: task
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - taskmgmt-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api/
+      route:
+        - destination:
+            host: taskmgmt-service
+            port:
+              number: 8080

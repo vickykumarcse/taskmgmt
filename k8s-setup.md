@@ -1,8 +1,10 @@
+## ✅ Kubernetes Setup with Minikube
+
 Complete guide to **install Minikube**, **build and use your local Docker image**, and **deploy your `taskmgmt` app using Kubernetes YAMLs**.
 
 ---
 
-## ✅ Step-by-Step Guide to Run Taskmgmt App on Minikube
+### Step-by-Step Guide to Run Taskmgmt App on Minikube
 
 ---
 
@@ -158,6 +160,10 @@ Alternatively you can get the url of the app:
 ```bash
 minikube service taskmgmt-service --url
 ```
+Acces the app
+```
+curl http://<ABOVE URL>/api/tasks
+```
 ---
 
 ### 🧪 6. **Check Logs and Status**
@@ -170,16 +176,14 @@ kubectl describe pod <pod-name>
 kubectl logs deployment/taskmgmt-deployment
 kubectl exec -it <pod-name> -- printenv
 ```
-Restart the deployment for image changes
-```bash
-kubectl rollout restart deployment taskmgmt-deployment
-```
-
 Remove minikube image in case of caching
 ```
 minikube ssh -- docker rmi -f taskmgmt:latest
 ```
-
+Restart the deployment for image changes
+```bash
+kubectl rollout restart deployment taskmgmt-deployment
+```
 ### 🌐 7. **Scale the running pods**
 
 Scale the running pods using the command below to leverage Kubernetes' built-in pod-level load balancing, managed automatically by the internal load balancer within the cluster.

@@ -180,7 +180,30 @@ Remove minikube image in case of caching
 minikube ssh -- docker rmi -f taskmgmt:latest
 ```
 
-### 🧪 7. **Stop the minikube**
+### 🌐 7. **Scale the running pods**
+
+Scale the running pods using the command below to leverage Kubernetes' built-in pod-level load balancing, managed automatically by the internal load balancer within the cluster.
+```bash
+kubectl scale deployment taskmgmt-deployment --replicas=3
+```
+Get ip addresses of all the pods
+```
+kubectl get pods -o wide
+```
+List all the k8s service
+```
+kubectl get service
+```
+List all the pod endpoints of a service, service load balances internally
+```
+kubectl get endpoints taskmgmt-service
+```
+---
+
+### 🧪 8. **Setup Service Mesh Istio for load balancing**
+Follow the instructions provided in the [`k8s-setup-istio.md`](./k8s-setup-istio.md) file.
+
+### 🧪 9. **Stop the minikube**
 If you just want to free memory but reuse your cluster later, use:
 
 ```bash

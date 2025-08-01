@@ -24,6 +24,19 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
 
+#### 🐧 For Mac:
+#### 🔹 Step 1: Install Homebrew (if not already)
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+#### 🔹 Step 2: Install `kubectl` and `minikube`
+
+```bash
+brew install kubectl
+brew install minikube
+```
 ---
 
 ### 🚀 2. **Start Minikube with Docker Driver**
@@ -102,6 +115,7 @@ minikube image list
 Apply them in order from taskmgmt directory:
 
 ```bash
+kubectl apply -f ./k8s/k8s-namespace.yml
 kubectl apply -f ./k8s/k8s-configmap.yml
 kubectl apply -f ./k8s/k8s-deployment.yml
 kubectl apply -f ./k8s/k8s-service.yml
@@ -175,6 +189,11 @@ kubectl get pods
 kubectl describe pod <pod-name>
 kubectl logs deployment/taskmgmt-deployment
 kubectl exec -it <pod-name> -- printenv
+# Namespace wise
+kubectl get namespaces
+kubectl config set-context --current --namespace=task
+kubectl get configmaps --all-namespacesZ
+kubectl get pods --all-namespaces
 ```
 Remove minikube image in case of caching
 ```
@@ -204,10 +223,35 @@ kubectl get endpoints taskmgmt-service
 ```
 ---
 
-### 🧪 8. **Setup Service Mesh Istio for load balancing**
+### 🌐 8. **Cluster Information**
+
+```bash
+kubectl config get-clusters
+```
+This shows all clusters your `~/.kube/config` knows about.
+
+```bash
+kubectl config current-context
+```
+
+```bash
+kubectl config use-context <context-name>
+```
+
+Get context names using:
+
+```bash
+kubectl config get-contexts
+```
+
+```bash
+kubectl cluster-info
+```
+
+### 🧪 9. **Setup Service Mesh Istio for load balancing**
 Follow the instructions provided in the [`k8s-setup-istio.md`](./k8s-setup-istio.md) file.
 
-### 🧪 9. **Stop the minikube**
+### 🧪 10. **Stop the minikube**
 If you just want to free memory but reuse your cluster later, use:
 
 ```bash

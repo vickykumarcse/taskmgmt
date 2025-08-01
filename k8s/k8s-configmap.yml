@@ -4,4 +4,4 @@ metadata:
   name: taskmgmt-config
   namespace: task
 data:
-  SERVICE_HOST: 192.168.49.1
+  SERVICE_HOST: host.docker.internal # Change to host.docker.internal for macOS and 192.168.49.1 for Linux

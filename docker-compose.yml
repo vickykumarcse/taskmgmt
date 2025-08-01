@@ -44,7 +44,7 @@ services:
 
   # 🦜 Kafka - Event Streaming
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.2.1
     container_name: kafka
     restart: no
     depends_on:
